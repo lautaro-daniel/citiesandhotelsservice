@@ -17,4 +17,9 @@ public class HotelService implements IHotelService{
     public List<Hotel> getHotelByCity(Long city_id) {
         return iHotelRepository.getHotelByCityId(city_id);
     }
+
+    @Override
+    public void saveHotel(Hotel hotel) {
+        iHotelRepository.save(hotel);
+    }
 }

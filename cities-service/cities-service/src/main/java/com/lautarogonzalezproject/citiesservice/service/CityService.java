@@ -32,4 +32,9 @@ public class CityService implements ICityService{
 
         return cityDTO;
     }
+
+    @Override
+    public void saveCity(City city) {
+        iCityRepository.save(city);
+    }
 }

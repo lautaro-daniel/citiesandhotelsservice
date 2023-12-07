@@ -7,4 +7,6 @@ import java.util.List;
 public interface IHotelService {
 
     List<Hotel> getHotelByCity(Long city_id);
+
+    public void saveHotel(Hotel hotel);
 }
