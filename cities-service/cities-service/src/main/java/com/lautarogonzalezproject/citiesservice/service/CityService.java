@@ -5,6 +5,8 @@ import com.lautarogonzalezproject.citiesservice.dto.HotelDTO;
 import com.lautarogonzalezproject.citiesservice.model.City;
 import com.lautarogonzalezproject.citiesservice.repository.HotelAPI;
 import com.lautarogonzalezproject.citiesservice.repository.ICityRepository;
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+import io.github.resilience4j.retry.annotation.Retry;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,17 +22,17 @@ public class CityService implements ICityService{
 
     //List<City> cityList = new ArrayList<City>();
     @Override
+    @CircuitBreaker(name = "hotels-service", fallbackMethod = "fallbackGetCitiesHotel")
+    @Retry(name = "hotels-service")
     public CityDTO getCitiesAndHotels(Long city_id) {
-        //traer los datos de city de la db
         City city = iCityRepository.findById(city_id).orElse(null);
 
-        //traigo datos desde api de hotel
         List<HotelDTO> hotels_list = hotelAPI.getHotelByCityId(city.getCity_id());
 
-        //unifico datos
         CityDTO cityDTO = new CityDTO(city.getCity_id(), city.getName(), city.getContinent(),
                 city.getCountry(), city.getState(), hotels_list);
 
+        //createException();
         return cityDTO;
     }
 
@@ -38,6 +40,17 @@ public class CityService implements ICityService{
     public void saveCity(City city) {
         iCityRepository.save(city);
     }
+
+    public CityDTO fallbackGetCitiesHotel(Throwable throwable){
+        return new CityDTO(99999999999L, "Failed", "Failed",
+                "Failed", "Failed", null);
+    }
+
+    public void createException(){
+        throw new IllegalArgumentException("Test Resilience and Circuit Breaker");
+    }
+
+    /*--- Add this methods later --- */
 
    /* public City findcity(String name, String country){
         City getCity = this.getCity();
