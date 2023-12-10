@@ -15,9 +15,8 @@ public class CityController {
 
     @GetMapping("/hotels/{city_id}")
     public CityDTO getCitiesAndHotels(@PathVariable("city_id") Long city_id){
-        CityDTO city = iCityService.getCitiesAndHotels(city_id);
 
-        return city;
+        return iCityService.getCitiesAndHotels(city_id);
     }
 
     @PostMapping("/save")
